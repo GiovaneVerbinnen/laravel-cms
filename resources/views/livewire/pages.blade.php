@@ -44,19 +44,20 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{!! $item->content !!}</div>
+                                    <div class="text-sm text-gray-900">{!!
+                                        \Illuminate\Support\Str::limit($item->content, 50, '...') !!}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{$item->slug}}
-                                    </span>
+                                    <a href="/{{$item->slug}}"> <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            {{$item->slug}}
+                                        </span></a>
                                 </td>
                                 <td>
                                     <x-jet-button wire:click="updateShowModal({{ $item->id }})">
                                         {{__('Update')}}
                                     </x-jet-button>
-                                    <x-jet-danger-button wire:click="delete({{ $item->id }})">
+                                    <x-jet-danger-button wire:click="deleteShowModal({{ $item->id }})" class="mt-1">
                                         {{__('Delete')}}
                                         </x-jet-button>
                                 </td>
@@ -139,6 +140,29 @@
                 {{ __('Save') }}
             </x-jet-button>
             @endif
+        </x-slot>
+    </x-jet-dialog-modal>
+
+    <!-- Delete Confirmation Modal -->
+    <x-jet-dialog-modal wire:model="modalConfirmDelete">
+        <x-slot name="title">
+            {{ __('Delete Page') }}
+        </x-slot>
+
+        <x-slot name="content">
+            {{ __('Are you sure you want to delete this Page? ') }}
+
+
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-secondary-button wire:click="$toggle('modalConfirmDelete')" wire:loading.attr="disabled">
+                {{ __('Cancel') }}
+            </x-jet-secondary-button>
+
+            <x-jet-danger-button class="ml-2" wire:click="delete" wire:loading.attr="disabled">
+                {{ __('Delete Page') }}
+            </x-jet-danger-button>
         </x-slot>
     </x-jet-dialog-modal>
 </div>

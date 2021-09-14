@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Livewire\Frontpage;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 Route::group(['middleware' => [
@@ -30,3 +27,6 @@ Route::group(['middleware' => [
     })->name('pages');;
 }
 );
+
+Route::get('/{urlslug}', Frontpage::class);
+Route::get('/', Frontpage::class);
