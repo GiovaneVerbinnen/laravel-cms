@@ -17,6 +17,26 @@ class Pages extends Component
     public $slug;
     public $title;
     public $content;
+    public $isSetToDefaultHomePage;
+    public $isSetToDefaultNotFoundPage;
+
+    private function unassignDefaultHomePage()
+    {
+        if($this->isSetToDefaultHomePage != null) {
+            Page::where('is_default_home', true)->update([
+                'is_default_home' => false
+            ]);
+        }
+    }
+
+    private function unassignDefaultNotFoundPage()
+    {
+        if($this->isSetToDefaultNotFoundPage != null) {
+            Page::where('is_default_not_found', true)->update([
+                'is_default_not_found' => false
+            ]);
+        }
+    }
 
     public function rules()
     {
@@ -27,29 +47,46 @@ class Pages extends Component
         ];
     }
 
+
     public function updatedTitle($value)
     {
         $this->slug = Str::slug($this->title);
     }
 
+    public function updatedIsSetToDefaultHomePage()
+    {
+        $this->isSetToDefaultNotFoundPage = null;
+    }
+
+    public function updatedIsSetToDefaultNotFoundPage()
+    {
+        $this->isSetToDefaultHomePage = null;
+    }
+
     public function create()
     {
         $this->validate();
+        $this->unassignDefaultHomePage();
+        $this->unassignDefaultNotFoundPage();
         Page::create($this->modalData());
         $this->showModalForm = false;
-        $this->resetVars();
+        $this->reset();
     }
 
     public function read()
     {
-        return Page::paginate(1);
+        return Page::paginate(5);
     }
 
     public function update()
     {
         $this->validate();
+        $this->unassignDefaultHomePage();
+        $this->unassignDefaultNotFoundPage();
         Page::find($this->modelId)->update($this->modalData());
         $this->showModalForm = false;
+        $this->isSetToDefaultHomePage = null;
+        $this->isSetToDefaultNotFoundPage = null;
     }
 
     public function delete()
@@ -59,14 +96,6 @@ class Pages extends Component
         $this->resetPage();
     }
 
-    public function modalData()
-    {
-        return [
-            'title' => $this->title,
-            'slug' => Str::slug($this->slug),
-            'content' => $this->content,
-        ];
-    }
 
 
     /**
@@ -77,14 +106,14 @@ class Pages extends Component
     public function createShowModal()
     {
         $this->resetValidation();
-        $this->resetVars();
+        $this->reset();
         $this->showModalForm = true;
     }
 
     public function updateShowModal($id)
     {
         $this->resetValidation();
-        $this->resetVars();
+        $this->reset();
         $this->modelId = $id;
         $this->showModalForm = true;
         $this->loadModel();
@@ -102,15 +131,22 @@ class Pages extends Component
         $this->title = $data->title;
         $this->slug = $data->slug;
         $this->content = $data->content;
+        $this->isSetToDefaultHomePage = !$data->isSetToDefaultHomePage ? null:true;
+        $this->isSetToDefaultNotFoundPage = !$data->isSetToDefaultNotFoundPage ? null:true;
     }
 
-    public function resetVars()
+    public function modalData()
     {
-        $this->title = null;
-        $this->slug = null;
-        $this->content = null;
-        $this->modelId = null;
+        return [
+            'title' => $this->title,
+            'slug' => Str::slug($this->slug),
+            'content' => $this->content,
+            'is_default_home' => $this->isSetToDefaultHomePage,
+            'is_default_not_found' => $this->isSetToDefaultNotFoundPage,
+        ];
     }
+
+
 
     public function mount()
     {

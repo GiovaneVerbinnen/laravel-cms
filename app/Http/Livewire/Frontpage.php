@@ -11,7 +11,7 @@ class Frontpage extends Component
     public $title;
     public $content;
 
-    public function mount($urlslug)
+    public function mount($urlslug = null)
     {
        $this->retriveContent($urlslug);
     }
@@ -23,9 +23,18 @@ class Frontpage extends Component
      */
     public function  retriveContent($urlslug)
     {
-        $data = Page::where('slug', $urlslug)->first();
-        $this->title = $data->title;
-        $this->content = $data->content;
+        if (empty($urlslug)){
+            $data = Page::where('is_default_home', true)->first();
+        } else {
+            $data = Page::where('slug', $urlslug)->first();
+            if(!$data){
+                $data = Page::where('is_default_not_found', true)->first();
+            }
+        }
+        if($data) {
+            $this->title = $data->title;
+            $this->content = $data->content;
+        }
     }
     public function render()
     {

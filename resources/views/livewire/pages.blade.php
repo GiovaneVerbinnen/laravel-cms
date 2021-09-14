@@ -39,6 +39,13 @@
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900">
                                             {{ $item->title }}
+
+                                            {!! $item->is_default_home ? '<span
+                                                class="text-xs text-green-500 font-bold"> [Dafult Home Page] </span>' :
+                                            '' !!}
+                                            {!! $item->is_default_not_found ? '<span
+                                                class="text-xs text-red-500 font-bold"> [Not Found Page] </span>' :
+                                            '' !!}
                                         </div>
 
                                     </div>
@@ -92,24 +99,27 @@
                 <x-jet-label for="title" value="{{ __('Slug') }}" />
                 <div class="mt-1 flex rounded-md shadow-sm">
                     <span
-                        class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                        class="inline-flex items-center px-2 py-1 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                         http://localhost:8000/
                     </span>
                     <input wire:model="slug"
-                        class="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        class="form-input flex-1 block w-full rounded-none border border-l-0 rounded-r-md bg-gray-50  border-gray-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                         placeholder="url-slug">
                 </div>
                 @error('slug') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
                 <label>
-                    <input class="form-checkbox" type="checkbox" value="" wire:model="isSetToDefaultHomePage" />
-                    <span class="ml-2 text-sm text-gray-600">Set as the default home page</span>
+                    <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultHomePage }}"
+                        wire:model="isSetToDefaultHomePage" />
+                    <span class="ml-2 text-sm text-gray-600">Set as the default home
+                        page</span>
                 </label>
             </div>
             <div class="mt-4">
                 <label>
-                    <input class="form-checkbox" type="checkbox" value="" />
+                    <input class="form-checkbox" type="checkbox" value="{{ $isSetToDefaultNotFoundPage }}"
+                        wire:model="isSetToDefaultNotFoundPage" />
                     <span class="ml-2 text-sm text-red-600">Set as the default 404 error page</span>
                 </label>
             </div>
